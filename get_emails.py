@@ -10,6 +10,7 @@ from googleapiclient.errors import HttpError
 
 # for encoding/decoding messages in base64
 from base64 import urlsafe_b64decode, urlsafe_b64encode
+
 # for dealing with attachement MIME types
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -30,7 +31,7 @@ def get_service():
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    token_path = os.path.join(CWD, 'token.json')
+    token_path = os.path.join(CWD, "token.json")
     if os.path.exists(token_path):
         creds = Credentials.from_authorized_user_file(token_path, SCOPES)
     # If there are no (valid) credentials available, let the user log in.
@@ -39,12 +40,13 @@ def get_service():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                os.path.join(CWD, 'credentials.json'), SCOPES)
+                os.path.join(CWD, "credentials.json"), SCOPES
+            )
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open(token_path, 'w') as token:
+        with open(token_path, "w") as token:
             token.write(creds.to_json())
-    service = build('gmail', 'v1', credentials=creds)
+    service = build("gmail", "v1", credentials=creds)
     return service
 
 
@@ -52,16 +54,20 @@ service = get_service()
 
 
 def search_messages(service, query):
-    result = service.users().messages().list(userId='me', q=query).execute()
+    result = service.users().messages().list(userId="me", q=query).execute()
     messages = []
-    if 'messages' in result:
-        messages.extend(result['messages'])
-    while 'nextPageToken' in result:
-        page_token = result['nextPageToken']
-        result = service.users().messages().list(
-            userId='me', q=query, pageToken=page_token).execute()
-        if 'messages' in result:
-            messages.extend(result['messages'])
+    if "messages" in result:
+        messages.extend(result["messages"])
+    while "nextPageToken" in result:
+        page_token = result["nextPageToken"]
+        result = (
+            service.users()
+            .messages()
+            .list(userId="me", q=query, pageToken=page_token)
+            .execute()
+        )
+        if "messages" in result:
+            messages.extend(result["messages"])
     return messages
 
 
@@ -123,11 +129,24 @@ def parse_parts(service, parts, folder_name, message):
                         if "attachment" in part_header_value:
                             # we get the attachment ID
                             # and make another request to get the attachment itself
-                            print("Saving the file:", filename,
-                                  "size:", get_size_format(file_size))
+                            print(
+                                "Saving the file:",
+                                filename,
+                                "size:",
+                                get_size_format(file_size),
+                            )
                             attachment_id = body.get("attachmentId")
-                            attachment = service.users().messages() \
-                                .attachments().get(id=attachment_id, userId='me', messageId=message['id']).execute()
+                            attachment = (
+                                service.users()
+                                .messages()
+                                .attachments()
+                                .get(
+                                    id=attachment_id,
+                                    userId="me",
+                                    messageId=message["id"],
+                                )
+                                .execute()
+                            )
                             data = attachment.get("data")
                             filepath = os.path.join(CWD, folder_name, filename)
                             if data:
@@ -146,11 +165,15 @@ def read_message(service, message):
         - Downloads text/html content (if available) and saves it under the folder created as index.html
         - Downloads any file that is attached to the email and saves it in the folder created
     """
-    msg = service.users().messages().get(
-        userId='me', id=message['id'], format='full').execute()
+    msg = (
+        service.users()
+        .messages()
+        .get(userId="me", id=message["id"], format="full")
+        .execute()
+    )
     # parts can be the message body, or attachments
     print(msg.keys())
-    payload = msg['payload']
+    payload = msg["payload"]
     print(payload.keys())
     headers = payload.get("headers")
     parts = payload.get("parts")
@@ -163,7 +186,7 @@ def read_message(service, message):
         for header in headers:
             name = header.get("name")
             value = header.get("value")
-            if name.lower() == 'from':
+            if name.lower() == "from":
                 # we print the From address
                 print("From:", value)
             if name.lower() == "to":
@@ -196,16 +219,17 @@ def read_message(service, message):
         if not os.path.isdir(os.path.join(CWD, folder_name)):
             os.mkdir(os.path.join(CWD, folder_name))
     parse_parts(service, parts, folder_name, message)
-    print("="*50)
+    print("=" * 50)
 
 
 def mark_read_message(service, message):
-    service.users().messages().modify(userId='me', id=message['id'], body={
-        'removeLabelIds': ['UNREAD']}).execute()
+    service.users().messages().modify(
+        userId="me", id=message["id"], body={"removeLabelIds": ["UNREAD"]}
+    ).execute()
 
 
 def delete_message(service, message):
-    service.users().messages().delete(userId='me', id=message['id']).execute()
+    service.users().messages().delete(userId="me", id=message["id"]).execute()
 
 
 def cleanup_message(service, message):
@@ -213,7 +237,7 @@ def cleanup_message(service, message):
     delete_message(service, message)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # get emails that match the query you specify
     results = search_messages(service, "from:readers@hellobooks.com")
     print(f"Found {len(results)} results.")

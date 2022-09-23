@@ -12,16 +12,23 @@ CWD = os.path.dirname(os.path.abspath(__file__))
 def run():
     results = search_messages(service, "from:readers@hellobooks.com")
     print(f"Found {len(results)} results.")
+    if len(results) == 0:
+        print("No results found.")
+        return
     for msg in results:
         read_message(service, msg)
 
     links = get_all_links()
 
-    driver = webdriver.Chrome(os.path.join(CWD, 'chromedriver'))
+    if len(links) == 0:
+        print("No links found.")
+        return
+
+    driver = webdriver.Chrome(os.path.join(CWD, "chromedriver"))
     try:
         success = sign_in(driver)
         assert success
-        print('Sign in success')
+        print("Sign in success")
     except Exception as e:
         if isinstance(e, AssertionError):
             print("Unable to sign in")
@@ -34,25 +41,25 @@ def run():
         print(l)
         try:
             success = buy_product(driver, l)
-            print('Visited page', end=', ')
+            print("Visited page", end=", ")
             if success:
-                print('Bought product')
+                print("Bought product")
             else:
-                print('Did not buy product')
+                print("Did not buy product")
         except Exception as e:
-            print('Failed to buy product since an exception occurred')
+            print("Failed to buy product since an exception occurred")
             print(e)
         finally:
             time.sleep(2)
-            print('='*50)
+            print("=" * 50)
     print("Done!")
     driver.quit()
 
     for msg in results:
         cleanup_message(service, msg)
 
-    os.system('rm -rf Hello_Books*')
+    os.system("rm -rf Hello_Books*")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()
