@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-import os.path
+import os
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -18,6 +18,8 @@ from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
 from mimetypes import guess_type as guess_mime_type
 
+CWD = os.path.dirname(os.path.abspath(__file__))
+
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
@@ -27,18 +29,19 @@ def get_service():
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    token_path = os.path.join(CWD, 'token.json')
+    if os.path.exists(token_path):
+        creds = Credentials.from_authorized_user_file(token_path, SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                os.path.join(CWD, 'credentials.json'), SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('token.json', 'w') as token:
+        with open(token_path, 'w') as token:
             token.write(creds.to_json())
     service = build('gmail', 'v1', credentials=creds)
     return service
@@ -155,7 +158,7 @@ def parse_parts(service, parts, folder_name, message):
                 # save the HTML file and optionally open it in the browser
                 if not filename:
                     filename = "index.html"
-                filepath = os.path.join(folder_name, filename)
+                filepath = os.path.join(CWD, folder_name, filename)
                 print("Saving HTML to", filepath)
                 with open(filepath, "wb") as f:
                     f.write(urlsafe_b64decode(data))
@@ -174,7 +177,7 @@ def parse_parts(service, parts, folder_name, message):
                             attachment = service.users().messages() \
                                 .attachments().get(id=attachment_id, userId='me', messageId=message['id']).execute()
                             data = attachment.get("data")
-                            filepath = os.path.join(folder_name, filename)
+                            filepath = os.path.join(CWD, folder_name, filename)
                             if data:
                                 with open(filepath, "wb") as f:
                                     f.write(urlsafe_b64decode(data))
@@ -221,7 +224,7 @@ def read_message(service, message):
                 folder_name = clean(value)
                 # we will also handle emails with the same subject name
                 folder_counter = 0
-                while os.path.isdir(folder_name):
+                while os.path.isdir(os.path.join(CWD, folder_name)):
                     folder_counter += 1
                     # we have the same folder name, add a number next to it
                     if folder_name[-1].isdigit() and folder_name[-2] == "_":
@@ -230,7 +233,7 @@ def read_message(service, message):
                         folder_name = f"{folder_name[:-3]}_{folder_counter}"
                     else:
                         folder_name = f"{folder_name}_{folder_counter}"
-                os.mkdir(folder_name)
+                os.mkdir(os.path.join(CWD, folder_name))
                 print("Subject:", value)
             if name.lower() == "date":
                 # we print the date when the message was sent
@@ -238,8 +241,8 @@ def read_message(service, message):
     if not has_subject:
         # if the email does not have a subject, then make a folder with "email" name
         # since folders are created based on subjects
-        if not os.path.isdir(folder_name):
-            os.mkdir(folder_name)
+        if not os.path.isdir(os.path.join(CWD, folder_name)):
+            os.mkdir(os.path.join(CWD, folder_name))
     parse_parts(service, parts, folder_name, message)
     print("="*50)
 
