@@ -21,7 +21,8 @@ from mimetypes import guess_type as guess_mime_type
 CWD = os.path.dirname(os.path.abspath(__file__))
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+# SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
+SCOPES = ["https://mail.google.com/"]
 
 
 def get_service():
@@ -62,55 +63,6 @@ def search_messages(service, query):
         if 'messages' in result:
             messages.extend(result['messages'])
     return messages
-
-# def get_emails():
-#     """Shows basic usage of the Gmail API.
-#     Lists the user's Gmail labels.
-#     """
-#     creds = None
-#     # The file token.json stores the user's access and refresh tokens, and is
-#     # created automatically when the authorization flow completes for the first
-#     # time.
-#     if os.path.exists('token.json'):
-#         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-#     # If there are no (valid) credentials available, let the user log in.
-#     if not creds or not creds.valid:
-#         if creds and creds.expired and creds.refresh_token:
-#             creds.refresh(Request())
-#         else:
-#             flow = InstalledAppFlow.from_client_secrets_file(
-#                 'credentials.json', SCOPES)
-#             creds = flow.run_local_server(port=0)
-#         # Save the credentials for the next run
-#         with open('token.json', 'w') as token:
-#             token.write(creds.to_json())
-
-#     try:
-#         # Call the Gmail API
-#         service = build('gmail', 'v1', credentials=creds)
-#         res = service.users().messages().list(
-#             userId='me', q='from:readers@hellobooks.com').execute()
-
-#         if 'resultSizeEstimate' in res:
-#             num_messages = res['resultSizeEstimate']
-#         elif 'messages' in res:
-#             num_messages = len(res['messages'])
-#         else:
-#             num_messages = 0
-#         print('Estimated number of messages:', num_messages)
-#         if num_messages == 0:
-#             return []
-
-#         ids = [m['id'] for m in res['messages']]
-
-#         messages = [service.users().messages().get(userId='me', id=i).execute()
-#                     for i in ids]
-#         return messages
-
-#     except HttpError as error:
-#         print(f'An error occurred: {error}')
-
-# utility functions
 
 
 def get_size_format(b, factor=1024, suffix="B"):
@@ -245,6 +197,20 @@ def read_message(service, message):
             os.mkdir(os.path.join(CWD, folder_name))
     parse_parts(service, parts, folder_name, message)
     print("="*50)
+
+
+def mark_read_message(service, message):
+    service.users().messages().modify(userId='me', id=message['id'], body={
+        'removeLabelIds': ['UNREAD']}).execute()
+
+
+def delete_message(service, message):
+    service.users().messages().delete(userId='me', id=message['id']).execute()
+
+
+def cleanup_message(service, message):
+    mark_read_message(service, message)
+    delete_message(service, message)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,4 @@
-from get_emails import service, search_messages, read_message
+from get_emails import service, search_messages, read_message, cleanup_message
 from get_links import get_all_links
 from buy_products import sign_in, buy_product
 
@@ -48,4 +48,11 @@ def run():
     print("Done!")
     driver.quit()
 
+    for msg in results:
+        cleanup_message(service, msg)
+
     os.system('rm -rf Hello_Books*')
+
+
+if __name__ == '__main__':
+    run()
