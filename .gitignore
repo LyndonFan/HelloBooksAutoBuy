@@ -6,3 +6,4 @@ token.json
 links.txt
 chromedriver
 .vscode
+.env
