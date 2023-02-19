@@ -54,10 +54,13 @@ def run():
             print("=" * 50)
     print("Done!")
     driver.quit()
-
-    cleanup_messages(service, results)
-
-    os.system("rm -rf Hello_Books*")
+    try:
+        cleanup_messages(service, results)
+    except Exception as e:
+        print("Error encountered while cleaning up")
+        print(e)
+    finally:
+        os.system("rm -rf Hello_Books*")
 
 
 if __name__ == "__main__":
