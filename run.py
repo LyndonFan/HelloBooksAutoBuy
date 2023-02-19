@@ -1,4 +1,4 @@
-from get_emails import service, search_messages, read_message, cleanup_message
+from get_emails import service, search_messages, read_message, cleanup_messages
 from get_links import get_all_links
 from buy_products import sign_in, buy_product
 
@@ -24,7 +24,7 @@ def run():
         print("No links found.")
         return
 
-    driver = webdriver.Chrome(os.path.join(CWD, "chromedriver"))
+    driver = webdriver.Chrome(os.path.join(CWD, "../chromedriver"))
     try:
         success = sign_in(driver)
         assert success
@@ -55,8 +55,7 @@ def run():
     print("Done!")
     driver.quit()
 
-    for msg in results:
-        cleanup_message(service, msg)
+    cleanup_messages(service, results)
 
     os.system("rm -rf Hello_Books*")
 
