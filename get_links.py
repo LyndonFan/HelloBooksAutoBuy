@@ -1,19 +1,15 @@
-from bs4 import BeautifulSoup
-import json
+from lxml import html
 import os
-import sys
 
 CWD = os.path.dirname(os.path.abspath(__file__))
 
 
 def find_links(filename):
-    with open(filename, "r") as f:
-        soup = BeautifulSoup(f.read(), "html.parser")
-
-    elements = soup.find_all("a")
-    links = [e["href"] for e in elements]
-    links = set(l for l in links if "geni.us/" in l)
-    return links
+    tree = html.parse(filename)
+    XPATH = '//td/a[contains(text(),"GET THIS BOOK")]'
+    elements = tree.xpath(XPATH)
+    links = [e.get("href") for e in elements]
+    return set(links)
 
 
 def get_all_links():
