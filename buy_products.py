@@ -39,6 +39,7 @@ def sign_in(driver):
 def buy_product(driver, url):
     driver.get(url)
     time.sleep(1)
+    # old url only redirects to amazon US, have to change to UK for it to remember account
     current_url = driver.current_url
     new_url = current_url.replace("https://www.amazon.com/", "https://www.amazon.co.uk/")
     driver.get(new_url)
