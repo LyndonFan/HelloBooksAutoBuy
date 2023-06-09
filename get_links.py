@@ -6,7 +6,7 @@ CWD = os.path.dirname(os.path.abspath(__file__))
 
 def find_links(filename):
     tree = html.parse(filename)
-    XPATH = '//td/a[contains(text(),"GET THIS BOOK")]'
+    XPATH = '//a[contains(text(),"GET THIS BOOK")]'
     elements = tree.xpath(XPATH)
     links = [e.get("href") for e in elements]
     return set(links)
@@ -16,9 +16,12 @@ def get_all_links():
     dirs = os.listdir(CWD)
     links = set()
     for d in dirs:
-        if "Hello_Books__" in d:
-            fname = os.path.join(CWD, d, "index.html")
-            links.update(find_links(fname))
+        if not os.path.isdir(os.path.join(CWD, d)):
+            continue
+        fname = os.path.join(CWD, d, "index.html")
+        if not os.path.isfile(fname):
+            continue
+        links.update(find_links(fname))
     return links
 
 
