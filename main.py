@@ -4,6 +4,7 @@ from buy_products import sign_in, buy_product
 
 import os
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 import time
 
 CWD = os.path.dirname(os.path.abspath(__file__))
@@ -24,7 +25,7 @@ def run():
         print("No links found.")
         return
 
-    driver = webdriver.Chrome(os.path.join(CWD, "../chromedriver"))
+    driver = webdriver.Chrome(service=Service())
     try:
         success = sign_in(driver)
         assert success
