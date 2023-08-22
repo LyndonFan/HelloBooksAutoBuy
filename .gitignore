@@ -8,5 +8,4 @@ chromedriver
 .vscode
 .env
 .DS_Store
-poetry.lock
 auto-buy-hello-books
