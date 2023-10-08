@@ -6,13 +6,12 @@ Buying books recommended in email automatically from Amazon.
 
 ## Prerequesites
 - subscribed to the service
-- amazon account
-- credentials to gmail api
+- an Amazon account to buy the books
+- credentials to Gmail api
 - selenium (the library)
 - chromedriver (for selenium)
 
 ## Usage
-- TODO
-
-## TODO
-- test the integrated product (only tried it by running scripts one by one, but not all at once. Maybe next weekend?)
+1. Create a virtual environment and install the requirements
+2. Create a `.env` file with the below variables (TODO)
+3. Run `python main.py`.
