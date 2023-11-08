@@ -6,7 +6,7 @@ authors = ["Lyndon Fan <lyndon0808@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.9, <4.0"
 selenium = ">=4.11.0"
 bs4 = "^0.0.1"
 python-dotenv = "^0.21.1"
