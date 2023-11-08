@@ -6,7 +6,7 @@ CWD = os.path.dirname(os.path.abspath(__file__))
 
 def find_links(filename):
     tree = html.parse(filename)
-    XPATH = '//a[contains(text(),"GET THIS BOOK")]'
+    XPATH = '//a[contains(text(),"Kindle")]'
     elements = tree.xpath(XPATH)
     links = [e.get("href") for e in elements]
     return set(links)
