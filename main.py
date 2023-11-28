@@ -38,6 +38,11 @@ def run():
         print("Encountered exception:\n%s" % e)
         driver.quit()
         exit()
+    
+    print(driver.current_url)
+    _ = input("Human intervention needed, please resolve and press enter to continue")
+    print("Assume it's been resolved, waiting for 5 seconds before continuing")
+    time.sleep(5)
 
     for l in links:
         print(l)
