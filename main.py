@@ -28,13 +28,14 @@ def run():
     driver = webdriver.Chrome(service=Service())
     try:
         success = sign_in(driver)
-        assert success
-        print("Sign in success")
-    except Exception as e:
-        if isinstance(e, AssertionError):
-            print("Unable to sign in")
+        if success:
+            print("Sign in success")
         else:
-            print("Encountered exception:\n%s" % e)
+            print("Unable to sign in")
+            driver.quit()
+            exit()
+    except Exception as e:
+        print("Encountered exception:\n%s" % e)
         driver.quit()
         exit()
 
