@@ -26,6 +26,7 @@ def sign_in(driver):
     except Exception as e:
         print(e)
         wait = input("Something went wrong. Fix it and press enter to continue")
+        email_field = driver.find_element("xpath", '//input[@id="ap_email"]')
     email = os.environ["EMAIL"]
     email_field.send_keys(email)
     continue_button = driver.find_element("xpath", '//input[@id="continue"]')
