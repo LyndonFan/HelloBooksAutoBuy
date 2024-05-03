@@ -40,9 +40,10 @@ def run():
         exit()
     
     print(driver.current_url)
-    _ = input("Human intervention needed, please resolve and press enter to continue")
-    print("Assume it's been resolved, waiting for 5 seconds before continuing")
     time.sleep(5)
+    if not driver.current_url.startswith("https://www.amazon.co.uk/"):
+        _ = input("Human intervention needed, please resolve and press enter to continue")
+        print("Assume it's been resolved, waiting for 5 seconds before continuing")
 
     for l in links:
         print(l)

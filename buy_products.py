@@ -32,11 +32,15 @@ def sign_in(driver):
     continue_button = driver.find_element("xpath", '//input[@id="continue"]')
     continue_button.click()
     time.sleep(1)
-    password_field = driver.find_element("xpath", '//input[@id="ap_password"]')
-    password = os.environ["PASSWORD"]
-    password_field.send_keys(password)
-    sign_in_button = driver.find_element("xpath", '//input[@id="signInSubmit"]')
-    sign_in_button.click()
+    try:
+        password_field = driver.find_element("xpath", '//input[@id="ap_password"]')
+        password = os.environ["PASSWORD"]
+        password_field.send_keys(password)
+        sign_in_button = driver.find_element("xpath", '//input[@id="signInSubmit"]')
+        sign_in_button.click()
+    except Exception as e:
+        print(e)
+        wait = input("Something went wrong. Fix it and press enter to continue")
     time.sleep(5)
     return True
 
