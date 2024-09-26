@@ -46,15 +46,21 @@ def buy_product(driver, url):
     # old url only redirects to amazon US, have to change to UK for it to remember account
     current_url = driver.current_url
     if "amazon.co.uk" not in current_url:
-        new_url = current_url.replace("https://www.amazon.com/", "https://www.amazon.co.uk/")
+        new_url = current_url.replace(
+            "https://www.amazon.com/", "https://www.amazon.co.uk/"
+        )
         driver.get(new_url)
         time.sleep(1)
-    purchased_notices = driver.find_elements("xpath", '//span[@id="booksInstantOrderUpdate"]')
+    purchased_notices = driver.find_elements(
+        "xpath", '//span[@id="booksInstantOrderUpdate"]'
+    )
     if len(purchased_notices) > 0:
         print("Already purchased")
         return False
     title = driver.find_element("xpath", '//span[@id="productTitle"]').text
-    price = driver.find_element("xpath", '//span[contains(@class, "centralizedApexPricePriceToPayMargin")]').text
+    price = driver.find_element(
+        "xpath", '//span[contains(@class, "centralizedApexPricePriceToPayMargin")]'
+    ).text
     price = re.sub("\n+", ".", price)
     print(f"{title}: {price}")
     price = re.sub("[^0-9\.]", "", price)
