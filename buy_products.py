@@ -1,13 +1,8 @@
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 
-from bs4 import BeautifulSoup
 import re
 import time
 import os
-import sys
-import getpass
 
 from dotenv import load_dotenv
 
@@ -25,7 +20,7 @@ def sign_in(driver):
         email_field = driver.find_element("xpath", '//input[@id="ap_email"]')
     except Exception as e:
         print(e)
-        wait = input("Something went wrong. Fix it and press enter to continue")
+        _ = input("Something went wrong. Fix it and press enter to continue")
         email_field = driver.find_element("xpath", '//input[@id="ap_email"]')
     email = os.environ["EMAIL"]
     email_field.send_keys(email)
@@ -40,7 +35,7 @@ def sign_in(driver):
         sign_in_button.click()
     except Exception as e:
         print(e)
-        wait = input("Something went wrong. Fix it and press enter to continue")
+        _ = input("Something went wrong. Fix it and press enter to continue")
     time.sleep(5)
     return True
 
@@ -50,7 +45,7 @@ def buy_product(driver, url):
     time.sleep(1)
     # old url only redirects to amazon US, have to change to UK for it to remember account
     current_url = driver.current_url
-    if not "amazon.co.uk" in current_url:
+    if "amazon.co.uk" not in current_url:
         new_url = current_url.replace("https://www.amazon.com/", "https://www.amazon.co.uk/")
         driver.get(new_url)
         time.sleep(1)
@@ -95,10 +90,10 @@ if __name__ == "__main__":
         driver.quit()
         exit()
 
-    for l in links:
-        print(l)
+    for link in links:
+        print(link)
         try:
-            success = buy_product(driver, l)
+            success = buy_product(driver, link)
             print("Visited page", end=", ")
             if success:
                 print("Bought product")

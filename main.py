@@ -41,14 +41,14 @@ def run():
     
     print(driver.current_url)
     time.sleep(5)
-    if not driver.current_url.startswith("https://www.amazon.co.uk/"):
+    if not driver.current_url.split("?")[0] == "https://www.amazon.co.uk/":
         _ = input("Human intervention needed, please resolve and press enter to continue")
         print("Assume it's been resolved, waiting for 5 seconds before continuing")
 
-    for l in links:
-        print(l)
+    for link in links:
+        print(link)
         try:
-            success = buy_product(driver, l)
+            success = buy_product(driver, link)
             print("Visited page", end=", ")
             if success:
                 print("Bought product")

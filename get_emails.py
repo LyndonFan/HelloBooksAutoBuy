@@ -6,18 +6,11 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 
 # for encoding/decoding messages in base64
-from base64 import urlsafe_b64decode, urlsafe_b64encode
+from base64 import urlsafe_b64decode
 
 # for dealing with attachement MIME types
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.image import MIMEImage
-from email.mime.audio import MIMEAudio
-from email.mime.base import MIMEBase
-from mimetypes import guess_type as guess_mime_type
 
 CWD = os.path.dirname(os.path.abspath(__file__))
 
@@ -99,8 +92,6 @@ def parse_parts(service, parts, folder_name, message):
         mimeType = part.get("mimeType")
         body = part.get("body")
         data = body.get("data")
-        file_size = body.get("size")
-        part_headers = part.get("headers")
         if part.get("parts"):
             # recursively call this function when we see that a part
             # has parts inside
