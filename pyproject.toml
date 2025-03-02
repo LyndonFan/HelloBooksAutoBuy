@@ -13,3 +13,8 @@ dependencies = [
     "python-dotenv>=1.0.1",
     "selenium>=4.29.0",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.9",
+]

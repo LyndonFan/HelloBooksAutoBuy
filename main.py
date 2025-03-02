@@ -3,12 +3,12 @@ from get_links import get_all_links
 from buy_products import sign_in, buy_product
 
 import os
+from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 import time
 
-CWD = os.path.dirname(os.path.abspath(__file__))
-
+CWD = Path(__file__).parent.resolve()
 
 def run():
     results = search_messages(service, "from:readers@hellobooks.com")
@@ -70,7 +70,10 @@ def run():
         print("Error encountered while cleaning up")
         print(e)
     finally:
-        os.system("rm -rf Hello_Books*")
+        for folder in CWD.glob("Hello_Books*"):
+            for file in folder.iterdir():
+                file.unlink()
+            folder.rmdir()
 
 
 if __name__ == "__main__":
