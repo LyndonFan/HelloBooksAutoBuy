@@ -9,3 +9,4 @@ chromedriver
 .env
 .DS_Store
 auto-buy-hello-books
+*.exe

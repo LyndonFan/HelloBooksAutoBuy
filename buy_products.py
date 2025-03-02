@@ -79,7 +79,7 @@ def buy_product(driver, url):
 
 
 if __name__ == "__main__":
-    driver = webdriver.Chrome(os.path.join(CWD, "chromedriver"))
+    driver = webdriver.Chrome(os.path.join(CWD, "chromedriver.exe"))
     with open(os.path.join(CWD, "links.txt"), "r") as f:
         links = f.read().strip().split("\n")
     try:

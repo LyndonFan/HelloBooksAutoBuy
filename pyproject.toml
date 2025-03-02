@@ -1,21 +1,15 @@
-[tool.poetry]
+[project]
 name = "hellobooksautobuy"
 version = "0.1.0"
-description = ""
-authors = ["Lyndon Fan <lyndon0808@gmail.com>"]
+description = "Add your description here"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = ">=3.9, <4.0"
-selenium = ">=4.11.0"
-bs4 = "^0.0.1"
-python-dotenv = "^0.21.1"
-google-api-python-client = "^2.78.0"
-google-auth-httplib2 = "^0.1.0"
-google-auth-oauthlib = "^1.0.0"
-lxml = "^4.9.2"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.12"
+dependencies = [
+    "bs4>=0.0.2",
+    "google-api-python-client>=2.162.0",
+    "google-auth-httplib2>=0.2.0",
+    "google-auth-oauthlib>=1.2.1",
+    "lxml>=5.3.1",
+    "python-dotenv>=1.0.1",
+    "selenium>=4.29.0",
+]
